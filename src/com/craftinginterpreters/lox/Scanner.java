@@ -112,6 +112,7 @@ class Scanner {
     private static boolean isAlpha(char c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
     }
+
     private static boolean isAlphaNumeric(char c) {
         return isAlpha(c) || isDigit(c);
     }
@@ -178,7 +179,8 @@ class Scanner {
     }
 
     private void addToken(TokenType tt, Object literal) {
-        tokens.add(new Token(tt, null, literal, line));
+        String text = source.substring(start, current);
+        tokens.add(new Token(tt, text, literal, line));
     }
 
     private boolean isAtEnd() {
