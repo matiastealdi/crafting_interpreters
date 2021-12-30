@@ -9,8 +9,26 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class Lox {
-
+    static private final Interpreter interpreter = new Interpreter();
     static boolean hasError = false;
+    static boolean hasRuntimeError = false;
+
+    static void error(int line, String message) {
+        report(line, "", message);
+    }
+
+    static void error(Token token, String message) {
+        if (token.type == TokenType.EOF) {
+            report(token.line, " at end", message);
+        } else {
+            report(token.line, " at '" + token.lexeme + "'", message);
+        }
+    }
+
+    static void runtimeError(RuntimeError error) {
+        System.err.println(error.getMessage() + "\n [line " + error.token.line + "]");
+        hasRuntimeError = true;
+    }
 
     public static void main(String args[]) throws IOException {
         if (args.length > 1) {
@@ -27,9 +45,8 @@ public class Lox {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
 
-        if (hasError) {
-            System.exit(65);
-        }
+        if (hasError) System.exit(65);
+        if (hasRuntimeError) System.exit(70);
     }
 
     private static void runPrompt() throws IOException {
@@ -59,23 +76,12 @@ public class Lox {
         // Stop in a syntax error
         if(hasError) return;
 
-        System.out.println(new AstPrinter().print(expr));
-    }
-
-    static void error(int line, String message) {
-        report(line, "", message);
+        //System.out.println(new AstPrinter().print(expr));
+        interpreter.interpret(expr);
     }
 
     private static void report(int line, String where, String message) {
         System.err.println("[line " + line + "] Error" + where + ": " + message);
         hasError = true;
-    }
-
-    static void error(Token token, String message) {
-        if (token.type == TokenType.EOF) {
-            report(token.line, " at end", message);
-        } else {
-            report(token.line, " at '" + token.lexeme + "'", message);
-        }
     }
 }
