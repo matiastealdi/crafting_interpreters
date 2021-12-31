@@ -7,6 +7,14 @@ It presents `Lox` a compact JavaScript like 'scripting' languages.
 
 ## Lox grammar
 
+### Statements
+```
+program -> statement* EOF ;
+statement -> exprSmt | printStmt ;
+exprSmt -> expression ";" ;
+printStmt -> "print" expression ";" ;
+```
+
 ### Expressions
 
 ```

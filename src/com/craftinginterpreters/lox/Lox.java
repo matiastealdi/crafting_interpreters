@@ -71,13 +71,13 @@ public class Lox {
  //       }
 
         Parser parser = new Parser(tokens);
-        Expr expr = parser.parse();
+        List<Stmt> program = parser.parse();
 
         // Stop in a syntax error
         if(hasError) return;
 
         //System.out.println(new AstPrinter().print(expr));
-        interpreter.interpret(expr);
+        interpreter.interpret(program);
     }
 
     private static void report(int line, String where, String message) {
